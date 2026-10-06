@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>41</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05030a;
+    --card: rgba(255,255,255,.05);
+    --card-hover: rgba(255,255,255,.12);
+    --text: #f3f0ff;
+    --muted: #9a93b8;
+    --purple: #8b5cf6;
+    --teal: #2de2d0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background:
+      radial-gradient(circle at 15% 10%, rgba(139,92,246,.35), transparent 45%),
+      radial-gradient(circle at 90% 85%, rgba(45,226,208,.22), transparent 45%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: "Manrope", system-ui, sans-serif;
+    display: flex; justify-content: center;
+    padding: 56px 20px;
+  }
+  main { width: 100%; max-width: 440px; text-align: center; }
+  .avatar {
+    width: 112px; height: 112px; border-radius: 50%;
+    display: block; margin: 0 auto 10px; object-fit: cover;
+    border: 3px solid transparent;
+    background: linear-gradient(var(--bg), var(--bg)) padding-box,
+                linear-gradient(135deg, var(--purple), var(--teal)) border-box;
+    box-shadow: 0 0 34px rgba(139,92,246,.45);
+  }
+  .rank {
+    display: block; margin: 0 auto 14px; height: 78px; width: auto;
+    filter: drop-shadow(0 0 14px rgba(45,226,208,.4));
+  }
+  h1 { font-size: 30px; font-weight: 800; margin: 0 0 28px; min-height: 1.3em; }
+  .caret {
+    display: inline-block; width: 3px; height: 1em; margin-left: 4px;
+    background: var(--teal); vertical-align: -0.12em;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  a.link {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px;
+    color: var(--text); text-decoration: none; text-align: left;
+    font-weight: 600; font-size: 17px;
+    backdrop-filter: blur(8px);
+    transition: transform .15s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  a.link .icon {
+    width: 42px; height: 42px; flex: none; border-radius: 12px;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 18px; color: #fff;
+  }
+  a.link small { font-weight: 400; font-size: 14px; color: var(--muted); margin-left: 6px; }
+  a.link:hover, a.link:focus-visible {
+    background: var(--card-hover);
+    border-color: rgba(45,226,208,.55);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139,92,246,.3);
+    outline: none;
+  }
+  a.link:focus-visible { box-shadow: 0 0 0 3px rgba(45,226,208,.7); }
+  .steam { background: linear-gradient(135deg,#2a475e,#1b6a9c); }
+  .discord { background: linear-gradient(135deg,#5865f2,#7983f5); }
+  .telegram { background: linear-gradient(135deg,#2aabee,#229ed9); }
+
+  .player {
+    position: fixed; top: 16px; right: 16px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 0 0 14px; height: 46px; border-radius: 23px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(8px);
+  }
+  .player input[type=range] { width: 84px; accent-color: var(--teal); cursor: pointer; }
+  .music {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: var(--text); cursor: pointer; padding: 0;
+    display: grid; place-items: center;
+    transition: background .15s, box-shadow .15s;
+  }
+  .music:hover { background: rgba(255,255,255,.16); }
+  .music:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(45,226,208,.7); }
+  .music svg { width: 20px; height: 20px; fill: currentColor; }
+  .music .pause { display: none; }
+  .music.on { box-shadow: 0 0 18px rgba(45,226,208,.55); color: var(--teal); }
+  .music.on .play { display: none; }
+  .music.on .pause { display: block; }
+  @media (prefers-reduced-motion: reduce) { a.link { transition: none; } .caret { animation: none; } }
+</style>
+</head>
+<body>
+<div class="player">
+  <input type="range" id="vol" min="0" max="100" value="35" aria-label="Громкость">
+  <button class="music" id="music" aria-label="Включить музыку" title="Музыка">
+    <svg class="play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+  </button>
+</div>
+<audio id="audio" src="music.mp3" loop preload="auto"></audio>
+
+<main>
+  <img class="avatar" src="avatar.jpg" alt="Аватар">
+  <img class="rank" src="rank.png" alt="Ранг в Dota 2">
+  <h1 id="nick" aria-label="41">41</h1>
+
+  <ul>
+    <li><a class="link" target="_blank" rel="noopener" href="https://steamcommunity.com/profiles/76561199646696801"><span class="icon steam">S</span><span>Steam</span></a></li>
+    <li><a class="link" href="#" id="discord" title="Скопировать ник"><span class="icon discord">D</span><span>Discord <small id="dc-hint">zxc_jersee</small></span></a></li>
+    <li><a class="link" target="_blank" rel="noopener" href="https://t.me/S41sssss"><span class="icon telegram">T</span><span>Telegram</span></a></li>
+  </ul>
+</main>
+
+<script>
+  const NICK = "41";
+  const el = document.getElementById("nick");
+  const caret = '<span class="caret" aria-hidden="true"></span>';
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.title = NICK;
+  el.setAttribute("aria-label", NICK);
+  if (reduce) {
+    el.innerHTML = NICK + caret;
+  } else {
+    let i = 0;
+    el.innerHTML = caret;
+    setTimeout(function type() {
+      i++;
+      el.innerHTML = NICK.slice(0, i) + caret;
+      if (i < NICK.length) setTimeout(type, 140 + Math.random() * 120);
+    }, 500);
+  }
+  const DISCORD = "zxc_jersee";
+  const dc = document.getElementById("discord");
+  const hint = document.getElementById("dc-hint");
+  hint.textContent = DISCORD;
+  dc.addEventListener("click", function (e) {
+    e.preventDefault();
+    const done = function () {
+      hint.textContent = "скопировано!";
+      setTimeout(function () { hint.textContent = DISCORD; }, 1600);
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(DISCORD).then(done, done);
+    else done();
+  });
+  const START_VOLUME = 35;
+  const audio = document.getElementById("audio");
+  const btn = document.getElementById("music");
+  const vol = document.getElementById("vol");
+  vol.value = START_VOLUME;
+  audio.volume = START_VOLUME / 100;
+  vol.addEventListener("input", function () { audio.volume = vol.value / 100; });
+
+  audio.addEventListener("play", function () {
+    btn.classList.add("on");
+    btn.setAttribute("aria-label", "Выключить музыку");
+  });
+  audio.addEventListener("pause", function () {
+    btn.classList.remove("on");
+    btn.setAttribute("aria-label", "Включить музыку");
+  });
+  btn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (audio.paused) audio.play().catch(function () {});
+    else audio.pause();
+    unlocked = true;
+  });
+  let unlocked = false;
+  const events = ["pointerdown", "keydown", "touchstart", "wheel"];
+  function startOnInteraction(e) {
+    if (unlocked) return;
+    if (e && e.target && e.target.closest && e.target.closest(".player")) return;
+    unlocked = true;
+    events.forEach(function (n) { window.removeEventListener(n, startOnInteraction); });
+    audio.play().catch(function () {});
+  }
+  audio.play().catch(function () {
+    events.forEach(function (n) { window.addEventListener(n, startOnInteraction, { passive: true }); });
+  });
+</script>
+</body>
+</html>
